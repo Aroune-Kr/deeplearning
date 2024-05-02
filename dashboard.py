@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import plotly.express as px
+import seaborn as sns
 
 
 
@@ -90,10 +91,27 @@ elif choice == 'MAP':
 elif choice == 'GET DATA':
 
 
-    ok = pd.read_csv("ok.csv")
-    st.title('Données Prédites')
+    sns.set(style="whitegrid")
+    data = pd.read_csv('predicted.csv')
+    st.title('Visualisation des Prédictions Annuelles')
 
-    st.write(ok)
+    country = st.selectbox('Choisissez un pays:', data['Country Name'].unique())
+    filtered_data = data[data['Country Name'] == country]
+
+    fig, ax = plt.subplots()
+    sns.barplot(x=['2020', '2021'], y=filtered_data[['2020', '2021']].values[0], palette='viridis')
+    ax.set_ylabel('Valeurs')
+    ax.set_title(f'Données Prédites pour {country}')
+    ax.set_ylim(0, max(
+        filtered_data[['2020', '2021']].values[0]) * 1.1)
+
+    for i, v in enumerate(filtered_data[['2020', '2021']].values[0]):
+        ax.text(i, v + 0.02 * max(filtered_data[['2020', '2021']].values[0]), f"{v:.2f}", color='black', ha='center')
+
+    st.pyplot(fig)
+
+
+
 
 
 
